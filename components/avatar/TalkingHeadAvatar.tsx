@@ -123,7 +123,10 @@ export default function TalkingHeadAvatar() {
     }
   }, []);
 
-  // ── Jaw animation via TalkingHead external API ────────────────────────────
+  // ── Jaw animation ─────────────────────────────────────────────────────────
+  // Fix: use `realtime` field (instant, no easing) instead of `system` field.
+  // TalkingHead's `system` uses acc=0.01 rad/s² → ~500ms ramp, too slow for jaw.
+  // `realtime` bypasses the exponential smoother and applies values each frame.
   const startJaw = useCallback(() => {
     if (jawRafRef.current) cancelAnimationFrame(jawRafRef.current);
     const t0 = performance.now();
@@ -131,10 +134,29 @@ export default function TalkingHeadAvatar() {
       const h = headRef.current;
       if (h) {
         const t = (performance.now() - t0) / 1000;
-        const v = Math.max(0, Math.sin(t * 8) * 0.55 + Math.sin(t * 14) * 0.2) * 0.35;
-        for (const k of ['jawOpen', 'mouthOpen']) {
-          const mt = h.mtAvatar?.[k];
-          if (mt?.ms?.length) { mt.system = v; mt.needsUpdate = true; }
+        const v = Math.max(0, Math.sin(t * 8) * 0.55 + Math.sin(t * 14) * 0.2) * 0.45;
+
+        // Primary: realtime bypasses TalkingHead's exponential smoothing
+        let driven = false;
+        for (const key of ['jawOpen', 'mouthOpen']) {
+          const entry = h.mtAvatar?.[key];
+          if (entry && entry.ms && entry.ms.length > 0) {
+            entry.realtime = v;
+            entry.needsUpdate = true;
+            driven = true;
+          }
+        }
+
+        // Fallback: write directly to Three.js morphTargetInfluences
+        if (!driven && h.morphs) {
+          for (const mesh of h.morphs) {
+            const dict = mesh.morphTargetDictionary;
+            if (!dict) continue;
+            for (const key of ['jawOpen', 'mouthOpen', 'Jaw_Open', 'mouth_open']) {
+              const idx = dict[key];
+              if (idx !== undefined) { mesh.morphTargetInfluences[idx] = v; driven = true; }
+            }
+          }
         }
       }
       jawRafRef.current = requestAnimationFrame(tick);
@@ -145,9 +167,21 @@ export default function TalkingHeadAvatar() {
   const stopJaw = useCallback(() => {
     if (jawRafRef.current) { cancelAnimationFrame(jawRafRef.current); jawRafRef.current = null; }
     const h = headRef.current;
-    if (h) for (const k of ['jawOpen', 'mouthOpen']) {
-      const mt = h.mtAvatar?.[k];
-      if (mt?.ms?.length) { mt.system = 0; mt.needsUpdate = true; }
+    if (h) {
+      for (const key of ['jawOpen', 'mouthOpen']) {
+        const entry = h.mtAvatar?.[key];
+        if (entry && entry.ms) { entry.realtime = null; entry.needsUpdate = true; }
+      }
+      if (h.morphs) {
+        for (const mesh of h.morphs) {
+          const dict = mesh.morphTargetDictionary;
+          if (!dict) continue;
+          for (const key of ['jawOpen', 'mouthOpen', 'Jaw_Open', 'mouth_open']) {
+            const idx = dict[key];
+            if (idx !== undefined) mesh.morphTargetInfluences[idx] = 0;
+          }
+        }
+      }
     }
   }, []);
 
