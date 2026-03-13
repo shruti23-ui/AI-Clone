@@ -5,7 +5,7 @@ import { useChatStore } from '@/lib/store/chatStore';
 
 const AVATAR_URL = '/avatar/avatar.glb';
 const INTRO_TEXT =
-  "Hey! I'm Shruti's AI clone — a digital version of her. Shruti is a final-year B.Tech student at NIT Jamshedpur, India, specialising in AI and Machine Learning. She's worked on medical imaging, generative AI, steel defect detection, and aviation technology. Feel free to ask me anything — or check out her portfolio, email her, or connect on LinkedIn!";
+  "Hello! I'm Shruti's AI clone — a digital version of her. My name is Shruti Priya, and I'm an AI and machine learning engineer at NIT Jamshedpur, India. My journey in technology has been driven by curiosity, research, and the desire to build systems that solve meaningful real-world problems — from medical imaging research in Greece to generative AI in the US. Feel free to ask me anything, check out the portfolio, or connect on LinkedIn!";
 
 // Tiny silent WAV — played synchronously on first click to unlock HTML5 Audio permission
 // Once this plays during a user gesture, all subsequent async audio.play() calls work

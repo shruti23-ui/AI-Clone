@@ -32,7 +32,7 @@ export const useChatStore = create<ChatStore>((set) => ({
       id: 'intro',
       role: 'assistant',
       content:
-        "I'm Shruti's AI clone — a digital version of her. Shruti is a final-year B.Tech student at NIT Jamshedpur, India, specialising in AI, Machine Learning, and Data Science. She's worked on medical imaging, steel defect detection, generative AI, RAG & LangGraph, and aviation technology. Check out her portfolio at the top, email her at priyashruti3112@gmail.com, or connect on LinkedIn!",
+        "Hello! I'm Shruti's AI clone — a digital version of her. My name is Shruti Priya, and I'm an AI and machine learning engineer at NIT Jamshedpur, India. My journey has been driven by curiosity, research, and building systems that solve meaningful real-world problems — from medical imaging in Greece to generative AI in the US. Ask me anything, check out the portfolio above, email priyashruti3112@gmail.com, or connect on LinkedIn!",
       timestamp: new Date(),
     },
   ],
