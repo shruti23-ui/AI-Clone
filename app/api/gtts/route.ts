@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
 
     // ── 1. ElevenLabs (PRIMARY — natural female voice) ────────────────────────
     const elevenKey   = process.env.ELEVENLABS_API_KEY;
-    const elevenVoice = 'YBUy3hgxByXQkFaPha1c';
+    const elevenVoice = 'nc2Vl5hShcxvKJ6EZJEP';
 
     if (elevenKey) {
       try {

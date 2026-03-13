@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'text is required' }, { status: 400 });
     }
 
-    const voiceId = 'YBUy3hgxByXQkFaPha1c';
+    const voiceId = 'nc2Vl5hShcxvKJ6EZJEP';
     const apiKey = process.env.ELEVENLABS_API_KEY;
 
     if (!apiKey) {
