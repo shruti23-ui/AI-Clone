@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# Environment variables (secrets)
+.env.local
+.env.*.local
+
+# Build artifacts
+tsconfig.tsbuildinfo
+
+# Large binary files
+*.mp4
+*.glb
+*.wav
+
+# Claude internal
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db

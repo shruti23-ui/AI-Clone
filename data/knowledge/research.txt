@@ -1,0 +1,79 @@
+SHRUTI PRIYA — RESEARCH & BACKGROUND
+
+ABOUT
+Shruti Priya is a final-year B.Tech student (Nov 2022 – June 2026) at NIT Jamshedpur, India.
+GPA: 3.0 / 4.0
+She specializes in AI, Machine Learning, and Data Science.
+
+RESEARCH & WORK EXPERIENCE (with timelines)
+
+1. Generative AI Developer Intern — MadScientist, Inc, Delaware, USA (REMOTE)
+   Timeline: August 2025 – December 2025
+   - US-based company, fully remote internship
+   - Built a RAG-based system with source attribution — 40% improvement in response accuracy
+   - Built a custom evaluation framework across 500+ test cases measuring retrieval precision and response consistency
+   - Optimized containerized LLM inference pipelines using Docker — 25% efficiency gain, 95%+ retrieval accuracy
+
+2. Machine Learning Researcher — Technical University of Crete, Greece (ONSITE)
+   Timeline: June 2025 – July 2025
+   - This was a fully ONSITE international research internship in Chania, Greece — a rare and prestigious opportunity
+   - Selected as Erasmus+ Visiting Student Grantee — highly competitive international program
+   - Conducted research at the Digital Image & Sensing Lab under faculty supervision
+   - Focus: Classifying Focal Cortical Dysplasia Type II (FCD-II) from brain MRI scans using deep learning
+   - Achieved 96.8% precision and 94.5% recall on 15,000+ multi-planar MRI datasets
+   - Used VGG16, VGG19, and DenseNet201 with Efficient Channel Attention (ECA) mechanisms
+   - Reduced training time by 30% via automated augmentation and cross-validation pipeline
+   - Co-authored IEEE paper currently under review at IEEE Journal of Biomedical and Health Informatics (IEEE JBHI)
+
+3. AI/ML Research Intern — DRDO, Hyderabad, India (ONSITE)
+   Timeline: May 2024 – July 2024
+   - Defence Research and Development Organisation — India's premier government defense research agency
+   - Onsite internship at DRDO Hyderabad
+   - Designed ML models for 3D/4D printing optimization using TensorFlow and Python
+   - Achieved 22% improvement in manufacturing efficiency and 18% higher precision
+   - Implemented feature engineering pipelines extracting 20+ parameters for predictive maintenance
+   - Contributed to AMDAD (Accelerated Materials Design & Development) platform — 100+ benchmark experiments
+   - Received letter of recommendation from Scientist-'C' KNS Pavan Kumar, DRDO
+
+PUBLICATIONS (2 papers under review at IEEE)
+
+Paper 1:
+- Title: "The Role of Efficient Channel Attention in Deep Learning for Classifying FCD-II in MRI"
+  Status: Under review at IEEE Journal of Biomedical and Health Informatics (IEEE JBHI)
+  Co-authored at Digital Image & Sensing Lab, Technical University of Crete, Greece (Erasmus+ program)
+  Topic: FCD-II brain MRI classification using deep learning with channel attention mechanisms
+
+Paper 2:
+- Topic: Traffic safety and conflict detection using trajectory-based AI models
+  Status: Under review at IEEE
+  Research conducted at IIT Roorkee, Safe Trip Lab
+  Focus: Trajectory-based conflict detection, 28% improvement in traffic risk assessment accuracy, 35% reduction in false positives, analysis of 10,000+ vehicle trajectories across 50+ intersection scenarios
+
+RESEARCH INTERESTS
+- Medical Imaging AI (FCD-II classification, MRI analysis, attention mechanisms)
+- Generative AI and Agentic Systems (RAG, LangChain, LangGraph)
+- Computer Vision (CNNs, YOLO, Transfer Learning, Attention Mechanisms)
+- NLP (Transformers, Embeddings, Fine-tuning)
+- Defense AI and Manufacturing Optimization
+- LLM Systems and Evaluation
+
+ACHIEVEMENTS
+- Represented India and NIT Jamshedpur at SAE Aero Design West 2025, California — 6th rank globally (75+ international teams), led the Technical Design Report for Team Phoenix
+- HPAIR 2025 — received letter of acceptance from Harvard College Project for Asian and International Relations (1,000+ applicants)
+- Top 25 percentile — Data Science and AI&ML Internship 2024, IIT Guwahati (500+ participants)
+- State-2, Zonal-32 — International Informatics Olympiad (100,000+ participants)
+- Head Core Organizing Member, TEDxBistupur — 10+ speakers, 500+ attendees, $50K+ budget
+- Event Coordinator, NSS NIT Jamshedpur — 10+ events, 500+ blood donors
+
+PERSONALITY & GOALS
+Shruti is passionate about applying AI to real-world problems — medical imaging, defense technology, and generative AI systems.
+She is data-driven, speaks confidently, and enjoys explaining complex AI concepts clearly.
+Currently looking for opportunities that combine AI research with practical deployment.
+
+AVAILABILITY & CONTACT
+- Available to join immediately
+- Open to full-time roles, research positions, and collaborations in AI/ML
+- Portfolio website: shruti23-ui.github.io/Personal-Portfolio/ — visitors can explore her full portfolio here
+- Connect on LinkedIn: linkedin.com/in/shruti-priya-5b3978243/
+- Email: priyashruti3112@gmail.com
+- If anyone wants to know more, they can visit her portfolio, drop her an email, or connect on LinkedIn — she'd love to hear from them!

@@ -1,0 +1,53 @@
+SHRUTI PRIYA
+
+CONTACT
+Phone: +91-9060764945
+Email: priyashruti3112@gmail.com
+LinkedIn: linkedin.com/in/shruti-priya-5b3978243/
+GitHub: github.com/shruti23-ui
+Portfolio: shruti23-ui.github.io/Personal-Portfolio/
+
+EDUCATION
+National Institute of Technology (NIT), Jamshedpur
+Bachelor of Technology — Nov 2022 to June 2026
+GPA: 3.0 / 4.0
+
+EXPERIENCE
+
+1. Generative AI Developer Intern
+   MadScientist, Inc — Delaware, USA (Remote)
+   Aug 2025 – Dec 2025
+   - Built a RAG-based system with source attribution to reduce hallucinations, resulting in 40% improvement in response accuracy
+   - Constructed a custom evaluation framework over 500+ test cases to measure retrieval precision, citation correctness, and response consistency for LLM systems
+   - Optimized containerized LLM inference pipelines using Docker, improving inference efficiency by 25% while maintaining 95%+ retrieval accuracy through optimized chunking and vector embeddings
+
+2. Machine Learning Researcher
+   Digital Image & Sensing Lab, Technical University of Crete — Chania, Greece
+   June 2025 – July 2025
+   - Erasmus+ Visiting Student Grantee (5% acceptance rate from highly competitive program)
+   - Co-authored paper under review at IEEE Journal of Biomedical and Health Informatics (IEEE JBHI)
+   - Engineered channel attention mechanisms with VGG16, VGG19, and DenseNet201, achieving 96.8% precision and 94.5% recall on 15,000+ MRI datasets
+   - Automated model training pipeline with data augmentation and cross-validation, reducing training time by 30%
+
+3. AI/ML Research Intern
+   Defence Research and Development Organisation (DRDO), Government of India — Hyderabad
+   May 2024 – July 2024
+   - Designed ML models for 3D/4D printing optimization using TensorFlow and Python, resulting in 22% increase in manufacturing efficiency and 18% higher precision
+   - Implemented feature engineering pipelines extracting 20+ parameters for predictive maintenance and control
+   - Contributed to validation and testing of AMDAD (Accelerated Materials Design & Development), conducting 100+ experiments to benchmark AI-powered materials R&D platform
+   - Received letter of recommendation for contributions
+
+TECHNICAL SKILLS
+Programming Languages: Python, C, C++, SQL, HTML, Bash, LaTeX, MATLAB
+ML/DL Frameworks: PyTorch, TensorFlow, Hugging Face, ONNX, vLLM, Scikit-learn, OpenCV
+Specialized AI Domains: LLM Systems (RAG, LangChain, LangGraph, Prompt Engineering), Computer Vision (CNNs, YOLO, Transfer Learning, Attention Mechanisms), NLP (Transformers, Embeddings, Fine-tuning), Agentic AI
+MLOps & Cloud Infrastructure: Docker, Kubernetes, MLflow, AWS, FastAPI, Flask, Git, GitHub Actions, CI/CD
+Data Engineering & Analytics: Apache Spark, ETL Pipelines, Feature Engineering, MySQL, Jupyter
+
+ACHIEVEMENTS & ACTIVITIES
+- Represented India and NIT Jamshedpur at SAE Aero Design West 2025, California — 6th rank globally (75+ international teams), led the Technical Design Report for Team Phoenix
+- Selected as delegate for Harvard College Project for Asian and International Relations (HPAIR) 2025 among 1,000+ applicants
+- Top 25 percentile in Data Science and AI&ML Internship 2024 by IIT Guwahati among 500+ participants
+- State-2 and Zonal-32 in International Informatics Olympiad among 100,000+ participants
+- Head Core Organizing Member, TEDxBistupur: Managed 10+ speakers for 2 events with 500+ attendees, $50K+ budget
+- Event Coordinator, NSS NIT Jamshedpur: Organized 10+ community service events, mobilized 500+ blood donors

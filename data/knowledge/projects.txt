@@ -1,0 +1,38 @@
+SHRUTI PRIYA — PROJECTS
+
+1. AI Hub: Chat, Search & News Summarization (Personal Project)
+   Tech Stack: LangGraph, LangChain, Groq API, Tavily Search API, Streamlit
+   - Built a personal AI assistant combining three capabilities: intelligent chat, real-time web search, and news summarization — all in one interface
+   - Integrated Tavily Search API for accurate real-time web search and live news retrieval with summarization
+   - Used LangGraph to architect a modular agentic system where chat, search, and news are separate agent nodes
+   - Reduced query latency by 35% using the Groq API for fast LLM inference
+   - Deployed on Streamlit with a clean conversational UI
+
+2. MatData: Materials Analytics Platform
+   Tech Stack: Python, Pandas, Streamlit
+   - Built and deployed a data analytics platform supporting 100+ users, enabling interactive exploration of 10GB+ materials datasets through 5+ visualization modules (heatmaps, distribution analysis, regression)
+   - Implemented automated data ingestion and processing pipelines using Pandas and NumPy for 10+ material properties, improving analysis throughput by 60%
+   - Validated 20+ datasets with domain researchers
+
+3. Medical MRI Classification — Deep Learning Research
+   Institution: Digital Image & Sensing Lab, Technical University of Crete, Greece
+   - Classified Focal Cortical Dysplasia Type II (FCD-II) from brain MRI scans using deep learning
+   - Engineered channel attention mechanisms with VGG16, VGG19, and DenseNet201
+   - 96.8% precision and 94.5% recall on 15,000+ MRI datasets
+   - Research paper co-authored, under review at IEEE JBHI
+   Tech Stack: Python, PyTorch, TensorFlow, OpenCV
+
+4. DRDO 3D/4D Printing Optimization
+   Institution: Defence Research and Development Organisation (DRDO), Hyderabad
+   - ML models for 3D/4D printing optimization
+   - 22% improvement in manufacturing efficiency, 18% higher precision
+   - Feature engineering extracting 20+ parameters for predictive maintenance
+   - Contributed to AMDAD (Accelerated Materials Design & Development) platform testing — 100+ experiments
+   Tech Stack: Python, TensorFlow, ML optimization
+
+5. SAE Aero Design West 2025 — Team Phoenix
+   - Team Phoenix is NIT Jamshedpur's aero designing and aero modelling team
+   - Represented India and NIT Jamshedpur at SAE Aero Design West 2025, California, USA
+   - Achieved 6th rank globally against 75+ international teams
+   - Led and authored the Technical Design Report for Team Phoenix — the core document evaluated by judges for engineering design decisions
+   - SAE Aero Design is a prestigious international collegiate competition where teams design, build, and fly remote-controlled aircraft to complete payload missions
