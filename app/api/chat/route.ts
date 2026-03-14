@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
       messages: openaiMessages,
       stream: true,
       temperature: 0.7,
-      max_tokens: 400,
+      max_tokens: 700,
     });
 
     const encoder = new TextEncoder();

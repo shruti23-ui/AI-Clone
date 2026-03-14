@@ -15,9 +15,9 @@ interface ChatStore {
   isSpeaking: boolean;
   isListening: boolean;
 
-  speakFn: ((text: string) => void) | null;
+  speakFn: ((text: string, cachedB64?: string | null) => void) | null;
   stopFn: (() => void) | null;
-  registerSpeakFn: (fn: (text: string) => void) => void;
+  registerSpeakFn: (fn: (text: string, cachedB64?: string | null) => void) => void;
   registerStopFn: (fn: () => void) => void;
   stopSpeaking: () => void;
 

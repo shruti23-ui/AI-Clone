@@ -5,7 +5,7 @@ import { useChatStore } from '@/lib/store/chatStore';
 
 const AVATAR_URL = '/avatar/avatar.glb';
 const INTRO_TEXT =
-  "Hey! I'm Shruti's AI clone. Ask me anything about her work, research, or how to connect!";
+  "Hello! I'm Shruti's AI clone — a digital version of her. I'm an AI and machine learning engineer at National Institute of Technology Jamshedpur, India, driven by curiosity, research, and the desire to build systems that solve meaningful real-world problems — from medical imaging in Greece to generative AI in the US. Feel free to ask me anything, explore her GitHub, connect through email or LinkedIn, or check out her portfolio!";
 
 // Tiny silent WAV — played synchronously on first click to unlock HTML5 Audio permission
 // Once this plays during a user gesture, all subsequent async audio.play() calls work
@@ -36,7 +36,7 @@ export function playClickSound() {
 // ---------------------------------------------------------------------------
 // TTS fetch
 // ---------------------------------------------------------------------------
-async function fetchTTS(text: string): Promise<string | null> {
+export async function fetchTTS(text: string): Promise<string | null> {
   try {
     const res = await fetch('/api/gtts', {
       method: 'POST',
@@ -291,7 +291,7 @@ export default function TalkingHeadAvatar() {
         console.log('[Avatar] mouthOpen mesh refs:', mouthRefsRef.current.length);
 
         // Register speak/stop functions for chat
-        registerSpeakFn((text: string) => speak(text));
+        registerSpeakFn((text: string, cachedB64?: string | null) => speak(text, cachedB64));
         registerStopFn(() => { stopCurrent(); stopJaw(); setSpeaking(false); });
 
         // Always show click prompt — never autoplay

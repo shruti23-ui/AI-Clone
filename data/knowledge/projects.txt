@@ -7,12 +7,16 @@ SHRUTI PRIYA — PROJECTS
    - Used LangGraph to architect a modular agentic system where chat, search, and news are separate agent nodes
    - Reduced query latency by 35% using the Groq API for fast LLM inference
    - Deployed on Streamlit with a clean conversational UI
+   What it does: Users can chat with an LLM, search the web in real time, and get summarized news — all from one assistant. The agentic architecture (LangGraph) routes queries to the right module automatically.
+   Why it matters: Demonstrates practical LLM system design, agentic orchestration, and integration of real-time data sources.
 
 2. MatData: Materials Analytics Platform
    Tech Stack: Python, Pandas, Streamlit
    - Built and deployed a data analytics platform supporting 100+ users, enabling interactive exploration of 10GB+ materials datasets through 5+ visualization modules (heatmaps, distribution analysis, regression)
    - Implemented automated data ingestion and processing pipelines using Pandas and NumPy for 10+ material properties, improving analysis throughput by 60%
    - Validated 20+ datasets with domain researchers
+   What it does: MatData is a web-based analytics platform for materials science datasets. It lets researchers explore large datasets interactively with heatmaps, regression plots, and distribution analysis without writing any code.
+   Why it matters: Bridges the gap between raw materials data and actionable insights for researchers who aren't programmers.
 
 3. Steel Surface Defect Detection — Machine Vision & Intelligence Lab
    Institution: Machine Vision & Intelligence Lab, NIT Jamshedpur
@@ -21,18 +25,47 @@ SHRUTI PRIYA — PROJECTS
    - Applied YOLO-based object detection and CNN architectures to identify surface defects in steel manufacturing
    - Worked with industrial imaging datasets to train and validate defect classification models
    - Focused on improving detection precision for manufacturing quality control pipelines
+   What it does: A computer vision system that detects surface defects on steel in real time using YOLO and CNNs. It processes camera frames from industrial lines and classifies defect types automatically.
+   Why it matters: Manual quality inspection in steel manufacturing is slow and error-prone. This system automates defect detection to improve production quality and reduce waste.
+   Key technical challenge: Handling high-speed industrial imaging with low-latency inference while maintaining high precision across multiple defect classes.
 
 4. Medical MRI Classification — Deep Learning Research
    Institution: Digital Image & Sensing Lab, Technical University of Crete, Greece
+   Tech Stack: Python, PyTorch, TensorFlow, OpenCV
    - Classified Focal Cortical Dysplasia Type II (FCD-II) from brain MRI scans using deep learning
    - Engineered channel attention mechanisms with VGG16, VGG19, and DenseNet201
-   - 96.8% precision and 94.5% recall on 15,000+ MRI datasets
-   - Research paper co-authored, under review at IEEE JBHI
-   Tech Stack: Python, PyTorch, TensorFlow, OpenCV
+   - Achieved 96.8% precision and 94.5% recall on 15,000+ MRI datasets
+   - Research paper co-authored, under review at IEEE JBHI (IEEE Journal of Biomedical and Health Informatics)
+   - This was part of the Erasmus+ Visiting Student program (5% acceptance rate)
+   What it does: A deep learning model that automatically classifies brain MRI scans to detect Focal Cortical Dysplasia Type II — a neurological condition that causes epilepsy and is hard to diagnose visually. The model uses channel attention with VGG16, VGG19, and DenseNet201 architectures to highlight diagnostically relevant regions.
+   Why it matters: FCD-II is notoriously difficult to detect on MRI scans even for expert radiologists. Automating detection at 96.8% precision can directly improve patient outcomes and reduce diagnostic delay.
+   Research impact: Paper submitted to IEEE JBHI, one of the top journals in biomedical imaging and AI.
+   Key innovation: Channel attention mechanism that focuses the network on subtle MRI signal differences characteristic of FCD-II lesions.
 
 5. SAE Aero Design West 2025 — Team Phoenix
+   Institution: NIT Jamshedpur
+   Competition: SAE Aero Design West 2025, California, USA
+   Rank: 6th globally out of 75+ international teams
    - Team Phoenix is NIT Jamshedpur's aero designing and aero modelling team
    - Represented India and NIT Jamshedpur at SAE Aero Design West 2025, California, USA
    - Achieved 6th rank globally against 75+ international teams
-   - Led and authored the Technical Design Report for Team Phoenix — the core document evaluated by judges for engineering design decisions
+   - Led and authored the Technical Design Report (TDR) for Team Phoenix — the core document evaluated by judges for engineering design decisions
    - SAE Aero Design is a prestigious international collegiate competition where teams design, build, and fly remote-controlled aircraft to complete payload missions
+   What it does: Teams design, build, and fly remote-controlled aircraft optimized to carry maximum payload within strict design rules. Shruti led the Technical Design Report — a comprehensive engineering document covering aerodynamics, structural design, propulsion, and mission strategy.
+   Why it matters: Competing against 75+ international university teams and ranking 6th globally demonstrates world-class engineering capability and represents India on an international stage.
+
+6. Shruti AI Clone (This project — AI Portfolio)
+   Tech Stack: Next.js 14, TypeScript, LangChain, Google Gemini, Pinecone (vector store), TalkingHead 3D avatar, Google TTS, Groq Whisper (voice input)
+   - Built an interactive AI portfolio where a 3D avatar speaks and answers questions about Shruti's work, research, and experience
+   - Implemented RAG (Retrieval-Augmented Generation) to ground responses in accurate knowledge about projects, resume, and research
+   - Integrated voice input (Groq Whisper) and voice output (Google TTS) for fully conversational interaction
+   - 3D talking avatar with real-time lip sync powered by TalkingHead.mjs and a custom GLB avatar model
+   - Deployed on Vercel at ai-clone-beta.vercel.app
+   What it does: Instead of a traditional portfolio website, Shruti built an AI clone of herself — a 3D avatar that speaks and answers any question about her background, projects, research, and how to contact her. Users can type or speak their questions and the avatar responds in voice.
+   Why it matters: Demonstrates advanced full-stack AI engineering — combining LLMs, RAG, vector search, TTS, STT, 3D rendering, and real-time streaming in a single production application.
+   Key technical features:
+   - RAG pipeline: LangChain + Google Gemini embeddings + vector store for grounded, accurate answers
+   - Streaming responses: Server-sent events for real-time text streaming
+   - Voice I/O: Groq Whisper for transcription, Google TTS for audio generation
+   - 3D avatar: Custom GLB model with TalkingHead lip sync and jaw animation
+   - Pre-fetched TTS: Audio starts fetching before response finishes streaming to reduce perceived latency

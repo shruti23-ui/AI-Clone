@@ -3,6 +3,7 @@
 import { useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useChatStore } from '@/lib/store/chatStore';
+import { fetchTTS } from '@/components/avatar/TalkingHeadAvatar';
 import ChatMessage from './ChatMessage';
 import ChatInput from './ChatInput';
 import TypingIndicator from './TypingIndicator';
@@ -22,17 +23,6 @@ export default function ChatInterface() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
-
-  // Speak intro once avatar is ready
-  useEffect(() => {
-    if (!speakFn) return;
-    const intro = messages.find((m) => m.id === 'intro');
-    if (intro) {
-      const timer = setTimeout(() => speakFn(intro.content), 1500);
-      return () => clearTimeout(timer);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [speakFn]);
 
   const sendMessage = useCallback(
     async (text: string) => {
@@ -61,17 +51,23 @@ export default function ChatInterface() {
         const reader = res.body!.getReader();
         const decoder = new TextDecoder();
         let fullText = '';
+        let prefetchTimer: ReturnType<typeof setTimeout> | null = null;
+        let ttsPreFetch: Promise<string | null> | null = null;
 
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
-          const chunk = decoder.decode(value, { stream: true });
-          fullText += chunk;
+          fullText += decoder.decode(value, { stream: true });
           updateLastMessage(fullText);
+
+          // Pre-fetch TTS when stream seems to be ending (no new chunk in 300ms)
+          if (prefetchTimer) clearTimeout(prefetchTimer);
+          prefetchTimer = setTimeout(() => { ttsPreFetch = fetchTTS(fullText); }, 300);
         }
 
-        // Make the avatar speak the completed response
-        speakFn?.(fullText);
+        if (prefetchTimer) clearTimeout(prefetchTimer);
+        const cachedB64 = ttsPreFetch ? await ttsPreFetch : null;
+        speakFn?.(fullText, cachedB64);
       } catch (err) {
         console.error('[Chat]', err);
         updateLastMessage("I'm sorry, I had trouble responding. Please try again!");

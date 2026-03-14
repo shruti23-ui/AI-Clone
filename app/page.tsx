@@ -115,7 +115,13 @@ export default function Home() {
             {/* Speaking circles */}
             <AnimatePresence>
               {isSpeaking && (
-                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none', zIndex: 0 }}>
+                <motion.div
+                  key="speaking-circles-mobile"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0, transition: { duration: 0.35, ease: 'easeOut' } }}
+                  style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none', zIndex: 0 }}
+                >
                   {[0, 1, 2].map((i) => (
                     <motion.div
                       key={i}
@@ -126,13 +132,11 @@ export default function Home() {
                         border: `${2.5 - i * 0.5}px solid rgba(34,211,238,${0.7 - i * 0.18})`,
                         boxShadow: `0 0 32px 4px rgba(34,211,238,${0.3 - i * 0.08})`,
                       }}
-                      initial={{ opacity: 0, scale: 0.75 }}
                       animate={{ opacity: [0, 0.65 - i * 0.16, 0], scale: [0.85, 1.2 + i * 0.16, 1.5 + i * 0.2] }}
-                      exit={{ opacity: 0, scale: 0.75 }}
                       transition={{ duration: 1.8 + i * 0.45, repeat: Infinity, ease: 'easeOut', delay: i * 0.3 }}
                     />
                   ))}
-                </div>
+                </motion.div>
               )}
             </AnimatePresence>
 
@@ -212,7 +216,13 @@ export default function Home() {
             <div style={{ position: 'absolute', inset: 0, zIndex: 1 }}>
               <AnimatePresence>
                 {isSpeaking && (
-                  <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none', zIndex: 0 }}>
+                  <motion.div
+                    key="speaking-circles-desktop"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0, transition: { duration: 0.35, ease: 'easeOut' } }}
+                    style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none', zIndex: 0 }}
+                  >
                     {[0, 1, 2].map((i) => (
                       <motion.div
                         key={i}
@@ -223,13 +233,11 @@ export default function Home() {
                           border: `${2.5 - i * 0.5}px solid rgba(34,211,238,${0.7 - i * 0.18})`,
                           boxShadow: `0 0 44px 4px rgba(34,211,238,${0.35 - i * 0.09}), inset 0 0 24px rgba(34,211,238,${0.07})`,
                         }}
-                        initial={{ opacity: 0, scale: 0.75 }}
                         animate={{ opacity: [0, 0.65 - i * 0.16, 0], scale: [0.85, 1.2 + i * 0.16, 1.5 + i * 0.2] }}
-                        exit={{ opacity: 0, scale: 0.75 }}
                         transition={{ duration: 1.8 + i * 0.45, repeat: Infinity, ease: 'easeOut', delay: i * 0.3 }}
                       />
                     ))}
-                  </div>
+                  </motion.div>
                 )}
               </AnimatePresence>
               <div style={{ position: 'absolute', inset: 0, zIndex: 1 }}>
