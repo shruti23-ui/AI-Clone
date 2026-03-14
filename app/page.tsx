@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useChatStore } from '@/lib/store/chatStore';
 import ChatPanel from '@/components/chat/ChatPanel';
 
@@ -22,9 +22,20 @@ const TalkingHeadAvatar = dynamic(
   }
 );
 
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+  return isMobile;
+}
 
 export default function Home() {
   const isSpeaking = useChatStore((s) => s.isSpeaking);
+  const isMobile = useIsMobile();
 
   return (
     <main
@@ -38,7 +49,7 @@ export default function Home() {
         background: '#04070f',
       }}
     >
-      {/* Ambient layers — behind everything */}
+      {/* Ambient layers */}
       <ParticleField />
       <div style={{
         position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0,
@@ -52,179 +63,204 @@ export default function Home() {
         background: 'radial-gradient(ellipse 55% 70% at 35% 60%, rgba(6,182,212,0.08) 0%, transparent 72%)',
       }} />
 
-      {/* Top bar — sits above everything */}
       <TopBar isSpeaking={isSpeaking} />
 
-      {/*
-        ─────────────────────────────────────────────────────────────────────
-        MAIN CONTENT
-        Two columns, flex row, sits below the 56px top bar.
-        LEFT:  flex column — hero text (normal flow) + avatar (flex-1)
-        RIGHT: chat panel (fixed width)
-        ─────────────────────────────────────────────────────────────────────
-      */}
-      <div style={{
-        display: 'flex',
-        flex: 1,
-        minHeight: 0,
-        paddingTop: 56, /* top bar height */
-      }}>
-
-        {/* ── LEFT COLUMN ── */}
+      {isMobile ? (
+        /* ── MOBILE: stacked layout ── */
         <div style={{
-          flex: 1,
-          minWidth: 0,
           display: 'flex',
           flexDirection: 'column',
-          position: 'relative',
+          flex: 1,
+          minHeight: 0,
+          paddingTop: 56,
         }}>
+          {/* Avatar — top 38% */}
+          <div style={{ position: 'relative', height: '38%', flexShrink: 0 }}>
+            {/* Top gradient */}
+            <div style={{
+              position: 'absolute', top: 0, left: 0, right: 0, height: 80,
+              background: 'linear-gradient(to bottom, rgba(4,7,15,0.85) 0%, transparent 100%)',
+              pointerEvents: 'none', zIndex: 5,
+            }} />
 
-          {/* Subtle top gradient so text stays readable over the avatar */}
-          <div style={{
-            position: 'absolute', top: 0, left: 0, right: 0, height: 160,
-            background: 'linear-gradient(to bottom, rgba(4,7,15,0.82) 0%, transparent 100%)',
-            pointerEvents: 'none', zIndex: 5,
-          }} />
+            {/* Hero text — compact for mobile */}
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: 'easeOut', delay: 0.2 }}
+              style={{
+                position: 'absolute', top: 0, left: 0, right: 0,
+                zIndex: 10, paddingTop: 10,
+                display: 'flex', flexDirection: 'column', alignItems: 'center',
+                pointerEvents: 'none',
+              }}
+            >
+              <h1 style={{
+                fontFamily: 'monospace', fontSize: 20, fontWeight: 700,
+                letterSpacing: '0.18em', lineHeight: 1.1, margin: 0, color: '#e2e8f0',
+                textAlign: 'center',
+              }}>
+                <span style={{ color: '#e2e8f0' }}>SHRUTI </span>
+                <span style={{ color: '#22d3ee', filter: 'drop-shadow(0 0 14px rgba(34,211,238,0.45))' }}>PRIYA</span>
+              </h1>
+              <div style={{ marginTop: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
+                <span style={{ fontFamily: 'monospace', letterSpacing: '0.2em', fontSize: 8, color: '#22d3ee', textShadow: '0 0 10px rgba(34,211,238,0.5)' }}>AI & ML</span>
+                <span style={{ color: 'rgba(34,211,238,0.35)', fontSize: 8 }}>·</span>
+                <span style={{ fontFamily: 'monospace', letterSpacing: '0.2em', fontSize: 8, color: '#22d3ee', textShadow: '0 0 10px rgba(34,211,238,0.5)' }}>RESEARCHER</span>
+                <span style={{ color: 'rgba(34,211,238,0.35)', fontSize: 8 }}>·</span>
+                <span style={{ fontFamily: 'monospace', letterSpacing: '0.2em', fontSize: 8, color: '#22d3ee', textShadow: '0 0 10px rgba(34,211,238,0.5)' }}>BUILDER</span>
+              </div>
+            </motion.div>
 
-          {/*
-            HERO TEXT — absolute at the top, z-index 10 (above avatar z-index 1).
-            Avatar fills the full column height — no more zoom/crop.
-          */}
-          <motion.div
-            initial={{ opacity: 0, y: -16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, ease: 'easeOut', delay: 0.3 }}
-            style={{
-              position: 'absolute',
-              top: 0, left: 0, right: 0,
-              zIndex: 10,
-              padding: '22px 24px 0',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              pointerEvents: 'none',
-            }}
-          >
-            <h1 style={{
-              fontFamily: 'monospace',
-              fontSize: 'clamp(20px, 3.2vw, 52px)',
-              fontWeight: 700,
-              letterSpacing: '0.18em',
-              lineHeight: 1.1,
-              margin: 0,
-              color: '#e2e8f0',
-              textAlign: 'center',
-            }}>
-              <span style={{ color: '#e2e8f0' }}>SHRUTI </span>
-              <span style={{ color: '#22d3ee', filter: 'drop-shadow(0 0 18px rgba(34,211,238,0.45))' }}>PRIYA</span>
-            </h1>
-
-            <div style={{ marginTop: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{
-                fontFamily: 'monospace', letterSpacing: '0.25em', textTransform: 'uppercase',
-                fontSize: 'clamp(8px, 0.85vw, 11px)',
-                color: '#22d3ee', textShadow: '0 0 12px rgba(34,211,238,0.5)',
-              }}>AI</span>
-              <span style={{ color: 'rgba(34,211,238,0.35)', fontSize: 10 }}>&amp;</span>
-              <span style={{
-                fontFamily: 'monospace', letterSpacing: '0.25em', textTransform: 'uppercase',
-                fontSize: 'clamp(8px, 0.85vw, 11px)',
-                color: '#22d3ee', textShadow: '0 0 12px rgba(34,211,238,0.5)',
-              }}>ML Engineer</span>
-              <span style={{ color: 'rgba(34,211,238,0.35)', fontSize: 9, margin: '0 2px' }}>·</span>
-              <span style={{
-                fontFamily: 'monospace', letterSpacing: '0.2em', textTransform: 'uppercase',
-                fontSize: 'clamp(7px, 0.7vw, 9px)',
-                color: '#22d3ee', textShadow: '0 0 12px rgba(34,211,238,0.5)',
-              }}>Researcher</span>
-              <span style={{ color: 'rgba(34,211,238,0.35)', fontSize: 9, margin: '0 2px' }}>·</span>
-              <span style={{
-                fontFamily: 'monospace', letterSpacing: '0.2em', textTransform: 'uppercase',
-                fontSize: 'clamp(7px, 0.7vw, 9px)',
-                color: '#22d3ee', textShadow: '0 0 12px rgba(34,211,238,0.5)',
-              }}>Builder</span>
-            </div>
-          </motion.div>
-
-          {/* AVATAR — fills the entire left column, z-index 1 (text floats above at z-10) */}
-          <div style={{
-            position: 'absolute', inset: 0,
-            zIndex: 1,
-          }}>
-
-            {/* Speaking circles — rendered behind Three.js canvas (z-index 0) */}
+            {/* Speaking circles */}
             <AnimatePresence>
               {isSpeaking && (
-                <div style={{
-                  position: 'absolute', inset: 0,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  pointerEvents: 'none', zIndex: 0,
-                }}>
+                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none', zIndex: 0 }}>
                   {[0, 1, 2].map((i) => (
                     <motion.div
                       key={i}
                       style={{
-                        position: 'absolute',
-                        borderRadius: '50%',
-                        width: `${(1.0 + i * 0.26) * 38}vmin`,
-                        height: `${(1.0 + i * 0.26) * 38}vmin`,
+                        position: 'absolute', borderRadius: '50%',
+                        width: `${(1.0 + i * 0.26) * 28}vmin`,
+                        height: `${(1.0 + i * 0.26) * 28}vmin`,
                         border: `${2.5 - i * 0.5}px solid rgba(34,211,238,${0.7 - i * 0.18})`,
-                        boxShadow: `0 0 44px 4px rgba(34,211,238,${0.35 - i * 0.09}), inset 0 0 24px rgba(34,211,238,${0.07})`,
+                        boxShadow: `0 0 32px 4px rgba(34,211,238,${0.3 - i * 0.08})`,
                       }}
                       initial={{ opacity: 0, scale: 0.75 }}
-                      animate={{
-                        opacity: [0, 0.65 - i * 0.16, 0],
-                        scale: [0.85, 1.2 + i * 0.16, 1.5 + i * 0.2],
-                      }}
+                      animate={{ opacity: [0, 0.65 - i * 0.16, 0], scale: [0.85, 1.2 + i * 0.16, 1.5 + i * 0.2] }}
                       exit={{ opacity: 0, scale: 0.75 }}
-                      transition={{
-                        duration: 1.8 + i * 0.45,
-                        repeat: Infinity,
-                        ease: 'easeOut',
-                        delay: i * 0.3,
-                      }}
+                      transition={{ duration: 1.8 + i * 0.45, repeat: Infinity, ease: 'easeOut', delay: i * 0.3 }}
                     />
                   ))}
                 </div>
               )}
             </AnimatePresence>
 
-            {/* 3D Avatar — fills the avatar section, z-index 1 (above circles) */}
+            {/* Avatar */}
             <div style={{ position: 'absolute', inset: 0, zIndex: 1 }}>
               <TalkingHeadAvatar />
             </div>
-
           </div>
-          {/* END avatar section */}
 
-        </div>
-        {/* END left column */}
-
-        {/* ── RIGHT COLUMN: Chat panel ── */}
-        <motion.div
-          initial={{ opacity: 0, x: 40 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.55, ease: 'easeOut', delay: 0.45 }}
-          style={{
-            width: 'clamp(340px, 38vw, 480px)',
-            flexShrink: 0,
-            position: 'relative',
+          {/* Chat panel — bottom 62% */}
+          <div style={{
+            flex: 1,
+            minHeight: 0,
             display: 'flex',
             flexDirection: 'column',
-            height: '100%',
+            background: 'rgba(4,7,15,0.95)',
+            borderTop: '1px solid rgba(255,255,255,0.06)',
+            boxShadow: 'inset 0 4px 24px rgba(6,182,212,0.03)',
             zIndex: 20,
-            background: 'rgba(4,7,15,0.78)',
-            backdropFilter: 'blur(28px)',
-            borderLeft: '1px solid rgba(255,255,255,0.05)',
-            boxShadow: 'inset 2px 0 40px rgba(6,182,212,0.03)',
-          }}
-        >
-          <ChatPanel />
-        </motion.div>
+          }}>
+            <ChatPanel />
+          </div>
+        </div>
+      ) : (
+        /* ── DESKTOP: two-column layout ── */
+        <div style={{
+          display: 'flex',
+          flex: 1,
+          minHeight: 0,
+          paddingTop: 56,
+        }}>
+          {/* Left column — avatar */}
+          <div style={{
+            flex: 1,
+            minWidth: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            position: 'relative',
+          }}>
+            <div style={{
+              position: 'absolute', top: 0, left: 0, right: 0, height: 160,
+              background: 'linear-gradient(to bottom, rgba(4,7,15,0.82) 0%, transparent 100%)',
+              pointerEvents: 'none', zIndex: 5,
+            }} />
 
-      </div>
-      {/* END main content */}
+            <motion.div
+              initial={{ opacity: 0, y: -16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, ease: 'easeOut', delay: 0.3 }}
+              style={{
+                position: 'absolute', top: 0, left: 0, right: 0,
+                zIndex: 10, padding: '22px 24px 0',
+                display: 'flex', flexDirection: 'column', alignItems: 'center',
+                pointerEvents: 'none',
+              }}
+            >
+              <h1 style={{
+                fontFamily: 'monospace',
+                fontSize: 'clamp(20px, 3.2vw, 52px)',
+                fontWeight: 700, letterSpacing: '0.18em', lineHeight: 1.1,
+                margin: 0, color: '#e2e8f0', textAlign: 'center',
+              }}>
+                <span style={{ color: '#e2e8f0' }}>SHRUTI </span>
+                <span style={{ color: '#22d3ee', filter: 'drop-shadow(0 0 18px rgba(34,211,238,0.45))' }}>PRIYA</span>
+              </h1>
+              <div style={{ marginTop: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ fontFamily: 'monospace', letterSpacing: '0.25em', textTransform: 'uppercase', fontSize: 'clamp(8px, 0.85vw, 11px)', color: '#22d3ee', textShadow: '0 0 12px rgba(34,211,238,0.5)' }}>AI</span>
+                <span style={{ color: 'rgba(34,211,238,0.35)', fontSize: 10 }}>&amp;</span>
+                <span style={{ fontFamily: 'monospace', letterSpacing: '0.25em', textTransform: 'uppercase', fontSize: 'clamp(8px, 0.85vw, 11px)', color: '#22d3ee', textShadow: '0 0 12px rgba(34,211,238,0.5)' }}>ML Engineer</span>
+                <span style={{ color: 'rgba(34,211,238,0.35)', fontSize: 9, margin: '0 2px' }}>·</span>
+                <span style={{ fontFamily: 'monospace', letterSpacing: '0.2em', textTransform: 'uppercase', fontSize: 'clamp(7px, 0.7vw, 9px)', color: '#22d3ee', textShadow: '0 0 12px rgba(34,211,238,0.5)' }}>Researcher</span>
+                <span style={{ color: 'rgba(34,211,238,0.35)', fontSize: 9, margin: '0 2px' }}>·</span>
+                <span style={{ fontFamily: 'monospace', letterSpacing: '0.2em', textTransform: 'uppercase', fontSize: 'clamp(7px, 0.7vw, 9px)', color: '#22d3ee', textShadow: '0 0 12px rgba(34,211,238,0.5)' }}>Builder</span>
+              </div>
+            </motion.div>
 
+            <div style={{ position: 'absolute', inset: 0, zIndex: 1 }}>
+              <AnimatePresence>
+                {isSpeaking && (
+                  <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none', zIndex: 0 }}>
+                    {[0, 1, 2].map((i) => (
+                      <motion.div
+                        key={i}
+                        style={{
+                          position: 'absolute', borderRadius: '50%',
+                          width: `${(1.0 + i * 0.26) * 38}vmin`,
+                          height: `${(1.0 + i * 0.26) * 38}vmin`,
+                          border: `${2.5 - i * 0.5}px solid rgba(34,211,238,${0.7 - i * 0.18})`,
+                          boxShadow: `0 0 44px 4px rgba(34,211,238,${0.35 - i * 0.09}), inset 0 0 24px rgba(34,211,238,${0.07})`,
+                        }}
+                        initial={{ opacity: 0, scale: 0.75 }}
+                        animate={{ opacity: [0, 0.65 - i * 0.16, 0], scale: [0.85, 1.2 + i * 0.16, 1.5 + i * 0.2] }}
+                        exit={{ opacity: 0, scale: 0.75 }}
+                        transition={{ duration: 1.8 + i * 0.45, repeat: Infinity, ease: 'easeOut', delay: i * 0.3 }}
+                      />
+                    ))}
+                  </div>
+                )}
+              </AnimatePresence>
+              <div style={{ position: 'absolute', inset: 0, zIndex: 1 }}>
+                <TalkingHeadAvatar />
+              </div>
+            </div>
+          </div>
+
+          {/* Right column — chat */}
+          <motion.div
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.55, ease: 'easeOut', delay: 0.45 }}
+            style={{
+              width: 'clamp(340px, 38vw, 480px)',
+              flexShrink: 0,
+              position: 'relative',
+              display: 'flex',
+              flexDirection: 'column',
+              height: '100%',
+              zIndex: 20,
+              background: 'rgba(4,7,15,0.78)',
+              backdropFilter: 'blur(28px)',
+              borderLeft: '1px solid rgba(255,255,255,0.05)',
+              boxShadow: 'inset 2px 0 40px rgba(6,182,212,0.03)',
+            }}
+          >
+            <ChatPanel />
+          </motion.div>
+        </div>
+      )}
     </main>
   );
 }
@@ -285,6 +321,7 @@ function ParticleField() {
 function TopBar({ isSpeaking }: { isSpeaking: boolean }) {
   const isLoading = useChatStore((s) => s.isLoading);
   const isListening = useChatStore((s) => s.isListening);
+  const isMobile = useIsMobile();
 
   const status = isListening ? { label: 'LISTENING', color: '#f87171', dot: '#ef4444' }
     : isSpeaking             ? { label: 'SPEAKING',  color: '#22d3ee', dot: '#06b6d4' }
@@ -300,7 +337,7 @@ function TopBar({ isSpeaking }: { isSpeaking: boolean }) {
         position: 'absolute', top: 0, left: 0, right: 0,
         zIndex: 30, height: 56,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '0 24px',
+        padding: '0 16px',
         borderBottom: '1px solid rgba(255,255,255,0.04)',
         background: 'rgba(4,7,15,0.9)',
         backdropFilter: 'blur(20px)',
@@ -312,9 +349,7 @@ function TopBar({ isSpeaking }: { isSpeaking: boolean }) {
           width: 6, height: 6, borderRadius: '50%',
           background: '#22d3ee', boxShadow: '0 0 8px rgba(34,211,238,0.85)',
         }} />
-        <span style={{
-          fontFamily: 'monospace', fontSize: 11, letterSpacing: '0.22em', color: '#e2e8f0',
-        }}>
+        <span style={{ fontFamily: 'monospace', fontSize: 11, letterSpacing: '0.22em', color: '#e2e8f0' }}>
           SHRUTI<span style={{ color: '#22d3ee' }}>.</span>AI
         </span>
       </div>
@@ -326,33 +361,32 @@ function TopBar({ isSpeaking }: { isSpeaking: boolean }) {
         background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)',
       }}>
         <span style={{
-          width: 6, height: 6, borderRadius: '50%',
-          display: 'inline-block',
+          width: 6, height: 6, borderRadius: '50%', display: 'inline-block',
           background: status.dot,
           boxShadow: status.label !== 'STANDBY' ? `0 0 6px ${status.dot}` : 'none',
           animation: status.label !== 'STANDBY' ? 'pulse 1.5s ease-in-out infinite' : 'none',
         }} />
-        <span style={{
-          fontFamily: 'monospace', fontSize: 10, letterSpacing: '0.2em', color: status.color,
-        }}>
+        <span style={{ fontFamily: 'monospace', fontSize: 10, letterSpacing: '0.2em', color: status.color }}>
           {status.label}
         </span>
       </div>
 
-      {/* Stack pills */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-        {['RAG', 'TTS', 'LLM'].map((pill) => (
-          <span key={pill} style={{
-            fontFamily: 'monospace', fontSize: 9, letterSpacing: '0.15em',
-            color: 'rgba(34,211,238,0.42)',
-            background: 'rgba(34,211,238,0.04)',
-            border: '1px solid rgba(34,211,238,0.1)',
-            borderRadius: 4, padding: '2px 8px',
-          }}>
-            {pill}
-          </span>
-        ))}
-      </div>
+      {/* Stack pills — hidden on mobile */}
+      {!isMobile && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          {['RAG', 'TTS', 'LLM'].map((pill) => (
+            <span key={pill} style={{
+              fontFamily: 'monospace', fontSize: 9, letterSpacing: '0.15em',
+              color: 'rgba(34,211,238,0.42)',
+              background: 'rgba(34,211,238,0.04)',
+              border: '1px solid rgba(34,211,238,0.1)',
+              borderRadius: 4, padding: '2px 8px',
+            }}>
+              {pill}
+            </span>
+          ))}
+        </div>
+      )}
     </motion.div>
   );
 }
