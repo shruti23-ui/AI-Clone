@@ -5,8 +5,23 @@ import { useChatStore } from '@/lib/store/chatStore';
 
 declare global {
   interface Window {
-    SpeechRecognition: typeof SpeechRecognition;
-    webkitSpeechRecognition: typeof SpeechRecognition;
+    SpeechRecognition: new () => SpeechRecognition;
+    webkitSpeechRecognition: new () => SpeechRecognition;
+  }
+  interface SpeechRecognition extends EventTarget {
+    lang: string;
+    interimResults: boolean;
+    maxAlternatives: number;
+    continuous: boolean;
+    onstart: (() => void) | null;
+    onend: (() => void) | null;
+    onerror: ((e: { error: string }) => void) | null;
+    onresult: ((e: SpeechRecognitionEvent) => void) | null;
+    start(): void;
+    stop(): void;
+  }
+  interface SpeechRecognitionEvent extends Event {
+    results: SpeechRecognitionResultList;
   }
 }
 

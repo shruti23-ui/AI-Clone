@@ -15,9 +15,11 @@ interface ChatStore {
   isSpeaking: boolean;
   isListening: boolean;
 
-  // TalkingHead speak function — registered by TalkingHeadAvatar once ready
   speakFn: ((text: string) => void) | null;
+  stopFn: (() => void) | null;
   registerSpeakFn: (fn: (text: string) => void) => void;
+  registerStopFn: (fn: () => void) => void;
+  stopSpeaking: () => void;
 
   addMessage: (msg: Omit<Message, 'id' | 'timestamp'>) => void;
   updateLastMessage: (content: string) => void;
@@ -32,7 +34,7 @@ export const useChatStore = create<ChatStore>((set) => ({
       id: 'intro',
       role: 'assistant',
       content:
-        "Hello! I'm Shruti's AI clone — a digital version of her. My name is Shruti Priya, and I'm an AI and machine learning engineer at NIT Jamshedpur, India. My journey has been driven by curiosity, research, and building systems that solve meaningful real-world problems — from medical imaging in Greece to generative AI in the US. Ask me anything, check out the portfolio above, email priyashruti3112@gmail.com, or connect on LinkedIn!",
+        "Hello! I'm Shruti's AI clone — a digital version of her. My name is Shruti Priya, and I'm an AI and machine learning engineer at NIT Jamshedpur, India. My journey in technology has been driven by curiosity, research, and the desire to build systems that solve meaningful real-world problems — from medical imaging in Greece to generative AI in the US. Feel free to ask me anything, explore her GitHub from the top, connect through email or LinkedIn, or check out her portfolio!",
       timestamp: new Date(),
     },
   ],
@@ -40,8 +42,15 @@ export const useChatStore = create<ChatStore>((set) => ({
   isSpeaking: false,
   isListening: false,
   speakFn: null,
+  stopFn: null,
 
   registerSpeakFn: (fn) => set({ speakFn: fn }),
+  registerStopFn: (fn) => set({ stopFn: fn }),
+  stopSpeaking: () => {
+    const { stopFn } = useChatStore.getState();
+    stopFn?.();
+    set({ isSpeaking: false });
+  },
 
   addMessage: (msg) =>
     set((state) => ({

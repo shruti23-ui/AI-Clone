@@ -2,10 +2,10 @@ SHRUTI PRIYA
 
 CONTACT
 Phone: +91-9060764945
-Email: priyashruti3112@gmail.com
-LinkedIn: linkedin.com/in/shruti-priya-5b3978243/
+Email: accessible via the email button at the top of the page
+LinkedIn: accessible via the LinkedIn button at the top of the page
 GitHub: github.com/shruti23-ui
-Portfolio: shruti23-ui.github.io/Personal-Portfolio/
+Portfolio: accessible via the button at the top of the page
 
 EDUCATION
 National Institute of Technology (NIT), Jamshedpur
@@ -51,3 +51,4 @@ ACHIEVEMENTS & ACTIVITIES
 - State-2 and Zonal-32 in International Informatics Olympiad among 100,000+ participants
 - Head Core Organizing Member, TEDxBistupur: Managed 10+ speakers for 2 events with 500+ attendees, $50K+ budget
 - Event Coordinator, NSS NIT Jamshedpur: Organized 10+ community service events, mobilized 500+ blood donors
+

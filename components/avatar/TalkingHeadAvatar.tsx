@@ -5,7 +5,7 @@ import { useChatStore } from '@/lib/store/chatStore';
 
 const AVATAR_URL = '/avatar/avatar.glb';
 const INTRO_TEXT =
-  "Hello! I'm Shruti's AI clone — a digital version of her. My name is Shruti Priya, and I'm an AI and machine learning engineer at NIT Jamshedpur, India. My journey in technology has been driven by curiosity, research, and the desire to build systems that solve meaningful real-world problems — from medical imaging research in Greece to generative AI in the US. Feel free to ask me anything, check out the portfolio, or connect on LinkedIn!";
+  "Hello! I'm Shruti's AI clone — a digital version of her. My name is Shruti Priya, and I'm an AI and machine learning engineer at NIT Jamshedpur, India. My journey in technology has been driven by curiosity, research, and the desire to build systems that solve meaningful real-world problems — from medical imaging in Greece to generative AI in the US. Feel free to ask me anything, explore her GitHub from the top, connect through email or LinkedIn, or check out her portfolio!";
 
 // Tiny silent WAV — played synchronously on first click to unlock HTML5 Audio permission
 // Once this plays during a user gesture, all subsequent async audio.play() calls work
@@ -109,11 +109,14 @@ export default function TalkingHeadAvatar() {
   const audioRef      = useRef<HTMLAudioElement | null>(null);
   const audioUnlocked = useRef(false); // true once silent WAV has played
   const jawRafRef     = useRef<number | null>(null);
+  // Direct Three.js mesh refs for mouthOpen — populated after avatar loads
+  // Bypasses TalkingHead's update loop entirely for guaranteed lip sync
+  const mouthRefsRef  = useRef<Array<{ inf: Float32Array; idx: number }>>([]);
 
   const [status, setStatus]     = useState<Status>('loading');
   const [errorMsg, setErrorMsg] = useState('');
   const [showPrompt, setShowPrompt] = useState(false);
-  const { registerSpeakFn, setSpeaking } = useChatStore();
+  const { registerSpeakFn, registerStopFn, setSpeaking } = useChatStore();
 
   const stopCurrent = useCallback(() => {
     if (audioRef.current) {
@@ -123,42 +126,33 @@ export default function TalkingHeadAvatar() {
     }
   }, []);
 
-  // ── Jaw animation ─────────────────────────────────────────────────────────
-  // Fix: use `realtime` field (instant, no easing) instead of `system` field.
-  // TalkingHead's `system` uses acc=0.01 rad/s² → ~500ms ramp, too slow for jaw.
-  // `realtime` bypasses the exponential smoother and applies values each frame.
+  // ── Mouth animation ───────────────────────────────────────────────────────
+  // GLB has only `mouthOpen` + `mouthSmile` (no jawOpen).
+  // Strategy: write DIRECTLY to Three.js morphTargetInfluences every RAF frame.
+  // Also set realtime in TalkingHead so it doesn't fight us back to baseline.
   const startJaw = useCallback(() => {
     if (jawRafRef.current) cancelAnimationFrame(jawRafRef.current);
     const t0 = performance.now();
     const tick = () => {
+      const t = (performance.now() - t0) / 1000;
+      // Natural speech-like oscillation, amplitude 0–0.7
+      const v = Math.max(0, Math.sin(t * 9) * 0.6 + Math.sin(t * 15) * 0.25) * 0.7;
+
+      // 1. Direct Three.js write — guaranteed, bypasses TalkingHead's update loop
+      for (const ref of mouthRefsRef.current) {
+        ref.inf[ref.idx] = v;
+      }
+
+      // 2. Also sync TalkingHead's internal state so it doesn't reset to baseline
       const h = headRef.current;
-      if (h) {
-        const t = (performance.now() - t0) / 1000;
-        const v = Math.max(0, Math.sin(t * 8) * 0.55 + Math.sin(t * 14) * 0.2) * 0.45;
-
-        // Primary: realtime bypasses TalkingHead's exponential smoothing
-        let driven = false;
-        for (const key of ['jawOpen', 'mouthOpen']) {
-          const entry = h.mtAvatar?.[key];
-          if (entry && entry.ms && entry.ms.length > 0) {
-            entry.realtime = v;
-            entry.needsUpdate = true;
-            driven = true;
-          }
-        }
-
-        // Fallback: write directly to Three.js morphTargetInfluences
-        if (!driven && h.morphs) {
-          for (const mesh of h.morphs) {
-            const dict = mesh.morphTargetDictionary;
-            if (!dict) continue;
-            for (const key of ['jawOpen', 'mouthOpen', 'Jaw_Open', 'mouth_open']) {
-              const idx = dict[key];
-              if (idx !== undefined) { mesh.morphTargetInfluences[idx] = v; driven = true; }
-            }
-          }
+      if (h?.mtAvatar) {
+        const entry = h.mtAvatar['mouthOpen'];
+        if (entry && 'ms' in entry) {
+          entry.realtime = v;
+          entry.needsUpdate = true;
         }
       }
+
       jawRafRef.current = requestAnimationFrame(tick);
     };
     jawRafRef.current = requestAnimationFrame(tick);
@@ -166,22 +160,13 @@ export default function TalkingHeadAvatar() {
 
   const stopJaw = useCallback(() => {
     if (jawRafRef.current) { cancelAnimationFrame(jawRafRef.current); jawRafRef.current = null; }
+    // Zero out directly
+    for (const ref of mouthRefsRef.current) ref.inf[ref.idx] = 0;
+    // Tell TalkingHead to stop holding realtime
     const h = headRef.current;
-    if (h) {
-      for (const key of ['jawOpen', 'mouthOpen']) {
-        const entry = h.mtAvatar?.[key];
-        if (entry && entry.ms) { entry.realtime = null; entry.needsUpdate = true; }
-      }
-      if (h.morphs) {
-        for (const mesh of h.morphs) {
-          const dict = mesh.morphTargetDictionary;
-          if (!dict) continue;
-          for (const key of ['jawOpen', 'mouthOpen', 'Jaw_Open', 'mouth_open']) {
-            const idx = dict[key];
-            if (idx !== undefined) mesh.morphTargetInfluences[idx] = 0;
-          }
-        }
-      }
+    if (h?.mtAvatar) {
+      const entry = h.mtAvatar['mouthOpen'];
+      if (entry && 'ms' in entry) { entry.realtime = null; entry.needsUpdate = true; }
     }
   }, []);
 
@@ -291,16 +276,23 @@ export default function TalkingHeadAvatar() {
         if (head.poseTemplates?.side)
           head.setPoseFromTemplate(head.poseTemplates.side, 500);
 
-        console.log('[Avatar] Mouth morphTargets:',
-          Object.keys(head.mtAvatar).filter(k =>
-            k.startsWith('jaw') || k.startsWith('mouth') || k.startsWith('viseme')
-          )
-        );
+        // Capture direct Three.js mesh refs for mouthOpen — bypasses TalkingHead's loop
+        mouthRefsRef.current = [];
+        if (head.morphs) {
+          for (const mesh of head.morphs) {
+            const dict = mesh.morphTargetDictionary;
+            if (!dict) continue;
+            const idx = dict['mouthOpen'];
+            if (idx !== undefined) {
+              mouthRefsRef.current.push({ inf: mesh.morphTargetInfluences, idx });
+            }
+          }
+        }
+        console.log('[Avatar] mouthOpen mesh refs:', mouthRefsRef.current.length);
 
-        // Register speak function for chat responses
-        registerSpeakFn((text: string) => {
-          speak(text);
-        });
+        // Register speak/stop functions for chat
+        registerSpeakFn((text: string) => speak(text));
+        registerStopFn(() => { stopCurrent(); stopJaw(); setSpeaking(false); });
 
         // Try autoplay with real verification
         setTimeout(async () => {
@@ -380,7 +372,7 @@ export default function TalkingHeadAvatar() {
 
       {status === 'ready' && showPrompt && (
         <div style={{
-          position: 'absolute', bottom: 160, left: '50%', transform: 'translateX(-50%)',
+          position: 'absolute', bottom: 28, left: '50%', transform: 'translateX(-50%)',
           background: 'rgba(6,182,212,0.08)', border: '1px solid rgba(6,182,212,0.25)',
           borderRadius: 24, padding: '8px 20px', backdropFilter: 'blur(8px)',
           whiteSpace: 'nowrap', animation: 'fadeIn 0.8s ease',
