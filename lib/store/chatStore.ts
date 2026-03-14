@@ -34,7 +34,7 @@ export const useChatStore = create<ChatStore>((set) => ({
       id: 'intro',
       role: 'assistant',
       content:
-        "Hello! I'm Shruti's AI clone — a digital version of her. I'm an AI and machine learning engineer driven by curiosity, research, and the desire to build systems that solve meaningful real-world problems — from medical imaging in Greece to generative AI in the US. Feel free to ask me anything, explore her GitHub, connect through email or LinkedIn, or check out her portfolio!",
+        "Hello! I'm Shruti's AI clone — a digital version of her. I'm an AI and machine learning engineer at National Institute of Technology Jamshedpur, India, driven by curiosity, research, and the desire to build systems that solve meaningful real-world problems — from medical imaging in Greece to generative AI in the US. Feel free to ask me anything, explore her GitHub, connect through email or LinkedIn, or check out her portfolio!",
       timestamp: new Date(),
     },
   ],
