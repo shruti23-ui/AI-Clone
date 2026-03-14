@@ -14,21 +14,21 @@ SHRUTI PRIYA — PROJECTS
    - Implemented automated data ingestion and processing pipelines using Pandas and NumPy for 10+ material properties, improving analysis throughput by 60%
    - Validated 20+ datasets with domain researchers
 
-3. Medical MRI Classification — Deep Learning Research
+3. Steel Surface Defect Detection — Machine Vision & Intelligence Lab
+   Institution: Machine Vision & Intelligence Lab, NIT Jamshedpur
+   Tech Stack: Python, PyTorch, OpenCV, YOLO, CNNs
+   - Developed a real-time steel surface defect detection system using deep learning and computer vision
+   - Applied YOLO-based object detection and CNN architectures to identify surface defects in steel manufacturing
+   - Worked with industrial imaging datasets to train and validate defect classification models
+   - Focused on improving detection precision for manufacturing quality control pipelines
+
+4. Medical MRI Classification — Deep Learning Research
    Institution: Digital Image & Sensing Lab, Technical University of Crete, Greece
    - Classified Focal Cortical Dysplasia Type II (FCD-II) from brain MRI scans using deep learning
    - Engineered channel attention mechanisms with VGG16, VGG19, and DenseNet201
    - 96.8% precision and 94.5% recall on 15,000+ MRI datasets
    - Research paper co-authored, under review at IEEE JBHI
    Tech Stack: Python, PyTorch, TensorFlow, OpenCV
-
-4. DRDO 3D/4D Printing Optimization
-   Institution: Defence Research and Development Organisation (DRDO), Hyderabad
-   - ML models for 3D/4D printing optimization
-   - 22% improvement in manufacturing efficiency, 18% higher precision
-   - Feature engineering extracting 20+ parameters for predictive maintenance
-   - Contributed to AMDAD (Accelerated Materials Design & Development) platform testing — 100+ experiments
-   Tech Stack: Python, TensorFlow, ML optimization
 
 5. SAE Aero Design West 2025 — Team Phoenix
    - Team Phoenix is NIT Jamshedpur's aero designing and aero modelling team

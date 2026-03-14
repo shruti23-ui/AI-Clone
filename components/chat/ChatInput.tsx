@@ -42,9 +42,9 @@ export default function ChatInput({ onSend, disabled }: Props) {
 
   const suggestions = [
     'Who is Shruti?',
-    'Tell me about ByteVision',
-    'What did she do at DRDO?',
-    'What AI projects has she built?',
+    'Tell me about her work at MadScientist, USA',
+    'What did she research at TU Crete, Greece?',
+    'What is the Steel Defect Detection project?',
   ];
 
   return (
