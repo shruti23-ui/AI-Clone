@@ -14,8 +14,9 @@ tsconfig.tsbuildinfo
 
 # Large binary files
 *.mp4
-*.glb
 *.wav
+# Exclude large/unused GLBs but keep the avatar
+female-character.glb
 
 # Claude internal
 .claude/
