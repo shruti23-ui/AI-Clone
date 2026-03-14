@@ -294,36 +294,10 @@ export default function TalkingHeadAvatar() {
         registerSpeakFn((text: string) => speak(text));
         registerStopFn(() => { stopCurrent(); stopJaw(); setSpeaking(false); });
 
-        // Try autoplay with real verification
-        setTimeout(async () => {
-          if (introPlayed.current) return;
-          const b64 = introCacheRef.current;
-          if (!b64) { setShowPrompt(true); return; }
-          try {
-            const probe = new Audio(`data:audio/mpeg;base64,${b64}`);
-            probe.volume = 1.0;
-            await probe.play();
-            await new Promise(r => setTimeout(r, 150));
-            if (probe.paused || probe.currentTime < 0.01) {
-              probe.pause();
-              setShowPrompt(true);
-              return;
-            }
-            if (introPlayed.current) { probe.pause(); return; }
-            // Autoplay confirmed working
-            audioUnlocked.current = true;
-            introPlayed.current = true;
-            setSpeaking(true);
-            startJaw();
-            audioRef.current = probe;
-            probe.onended = () => { stopJaw(); setSpeaking(false); };
-            head.audioCtx?.resume().catch(() => {});
-          } catch {
-            setShowPrompt(true);
-          }
-        }, 700);
+        // Always show click prompt — never autoplay
+        setShowPrompt(true);
 
-        // Document-level listener — first click/key anywhere unlocks
+        // Speak only on first user click/key
         const onInteract = () => {
           document.removeEventListener('click', onInteract, true);
           document.removeEventListener('keydown', onInteract, true);
