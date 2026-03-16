@@ -54,8 +54,8 @@ export default function ChatPanel() {
       const reader  = res.body!.getReader();
       const decoder = new TextDecoder();
       let fullText  = '';
-      let prefetchTimer: ReturnType<typeof setTimeout> | null = null;
-      let ttsPreFetch: Promise<string | null> | null = null;
+      let ttsPromise: Promise<string | null> | null = null;
+      let earlyTimer: ReturnType<typeof setTimeout> | null = null;
 
       while (true) {
         const { done, value } = await reader.read();
@@ -63,14 +63,19 @@ export default function ChatPanel() {
         fullText += decoder.decode(value, { stream: true });
         updateLastMessage(fullText);
 
-        // Pre-fetch TTS when stream seems to be ending (no new chunk in 300ms)
-        if (prefetchTimer) clearTimeout(prefetchTimer);
-        prefetchTimer = setTimeout(() => { ttsPreFetch = fetchTTS(fullText); }, 300);
+        // Start TTS early: 150ms after last chunk (stream likely ending)
+        if (earlyTimer) clearTimeout(earlyTimer);
+        earlyTimer = setTimeout(() => {
+          if (!ttsPromise) ttsPromise = fetchTTS(fullText);
+        }, 150);
       }
 
-      if (prefetchTimer) clearTimeout(prefetchTimer);
-      const cachedB64 = ttsPreFetch ? await ttsPreFetch : null;
-      speakFn?.(fullText, cachedB64);
+      // Stream done — start TTS NOW if early timer hasn't fired yet
+      if (earlyTimer) clearTimeout(earlyTimer);
+      if (!ttsPromise) ttsPromise = fetchTTS(fullText);
+
+      // Pass the Promise directly — speak() starts jaw immediately, plays when audio resolves
+      speakFn?.(fullText, ttsPromise);
     } catch {
       updateLastMessage("I'm sorry, something went wrong. Please try again.");
     } finally {

@@ -15,10 +15,10 @@ interface ChatStore {
   isSpeaking: boolean;
   isListening: boolean;
 
-  speakFn: ((text: string, cachedB64?: string | null) => void) | null;
+  speakFn: ((text: string, audio?: Promise<string | null> | string | null) => void) | null;
   stopFn: (() => void) | null;
   unlockFn: (() => void) | null;
-  registerSpeakFn: (fn: (text: string, cachedB64?: string | null) => void) => void;
+  registerSpeakFn: (fn: (text: string, audio?: Promise<string | null> | string | null) => void) => void;
   registerStopFn: (fn: () => void) => void;
   registerUnlockFn: (fn: () => void) => void;
   stopSpeaking: () => void;

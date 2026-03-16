@@ -116,14 +116,27 @@ export async function POST(req: NextRequest) {
     const { text } = await req.json();
     if (!text?.trim()) return NextResponse.json({ error: 'No text' }, { status: 400 });
 
-    if (!SARVAM_KEY) return NextResponse.json({ error: 'SARVAM_API_KEY not configured' }, { status: 500 });
+    if (!SARVAM_KEY) {
+      console.error('[Sarvam] SARVAM_API_KEY not set');
+      return NextResponse.json({ error: 'SARVAM_API_KEY not configured' }, { status: 500 });
+    }
 
-    const hindiText = await translateToHindi(text);
-    const audioB64  = await hindiTTS(hindiText);
+    // Limit to first ~500 chars (2-3 sentences) to stay within timeout + API limits
+    const trimmed = text.length > 500
+      ? text.slice(0, 500).replace(/[^.!?]*$/, '').trim() || text.slice(0, 500)
+      : text.trim();
+
+    console.log(`[Sarvam] Translating ${trimmed.length} chars`);
+
+    const hindiText = await translateToHindi(trimmed);
+    console.log(`[Sarvam] Hindi: ${hindiText.slice(0, 80)}...`);
+
+    const audioB64 = await hindiTTS(hindiText);
+    console.log(`[Sarvam] Audio OK: ${audioB64.length} chars`);
 
     return NextResponse.json({ audioContent: audioB64, hindiText });
   } catch (err: any) {
-    console.error('[Sarvam]', err);
+    console.error('[Sarvam] Error:', err?.message ?? err);
     return NextResponse.json({ error: err?.message ?? 'Sarvam failed' }, { status: 500 });
   }
 }

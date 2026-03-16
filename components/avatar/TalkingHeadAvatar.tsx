@@ -185,33 +185,31 @@ export default function TalkingHeadAvatar() {
   }, []);
 
   // ── Play TTS audio (jaw starts immediately, audio when ready) ────────────
-  const speak = useCallback((text: string, cachedB64?: string | null) => {
+  // audio can be: a pre-fetched Promise (fastest), a cached b64 string, or null (fetch fresh)
+  const speak = useCallback((text: string, audio?: Promise<string | null> | string | null) => {
     setSpeaking(true);
     stopCurrent();
-    startJaw(); // mouth moves immediately while TTS loads
+    startJaw(); // mouth moves immediately — no waiting
     headRef.current?.audioCtx?.resume().catch(() => {});
 
     const doPlay = (b64: string) => {
-      audioRef.current = playBase64Audio(b64, () => {
-        stopJaw();
-        setSpeaking(false);
-      });
+      audioRef.current = playBase64Audio(b64, () => { stopJaw(); setSpeaking(false); });
     };
 
-    if (cachedB64) {
-      doPlay(cachedB64);
-    } else {
-      fetchTTS(text).then((b64) => {
-        if (!b64) {
-          console.error('[Avatar] TTS failed — no audio. Speaking without voice.');
-          // Jaw still moves for estimated duration, then stops
-          const wordCount = text.split(' ').length;
-          setTimeout(() => { stopJaw(); setSpeaking(false); }, wordCount * 400 + 1000);
-          return;
-        }
-        doPlay(b64);
-      });
-    }
+    const fallback = () => {
+      const wordCount = text.split(' ').length;
+      setTimeout(() => { stopJaw(); setSpeaking(false); }, wordCount * 400 + 1000);
+    };
+
+    const audioPromise: Promise<string | null> =
+      audio instanceof Promise ? audio :
+      typeof audio === 'string' ? Promise.resolve(audio) :
+      fetchTTS(text);
+
+    audioPromise.then((b64) => {
+      if (!b64) { fallback(); return; }
+      doPlay(b64);
+    }).catch(() => fallback());
   }, [setSpeaking, stopCurrent, startJaw, stopJaw]);
 
   const playIntro = useCallback(() => {
@@ -288,7 +286,7 @@ export default function TalkingHeadAvatar() {
         console.log('[Avatar] mouthOpen mesh refs:', mouthRefsRef.current.length);
 
         // Register speak/stop functions for chat
-        registerSpeakFn((text: string, cachedB64?: string | null) => speak(text, cachedB64));
+        registerSpeakFn((text, audio) => speak(text, audio));
         registerStopFn(() => { stopCurrent(); stopJaw(); setSpeaking(false); });
 
         setShowPrompt(true);
