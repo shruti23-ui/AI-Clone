@@ -3,7 +3,8 @@
 import { useState, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
-import { Message } from '@/lib/store/chatStore';
+import { Message, useChatStore } from '@/lib/store/chatStore';
+import { playClickSound } from '@/components/avatar/TalkingHeadAvatar';
 
 interface Props {
   message: Message;
@@ -14,9 +15,13 @@ type HindiState = 'idle' | 'loading' | 'playing';
 export default function ChatMessage({ message }: Props) {
   const isUser = message.role === 'user';
   const [hindiState, setHindiState] = useState<HindiState>('idle');
+  const [hindiText, setHindiText]   = useState<string>('');
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const { unlockFn } = useChatStore();
 
   const handleHindi = useCallback(async () => {
+    playClickSound();
+
     if (hindiState === 'playing') {
       audioRef.current?.pause();
       audioRef.current = null;
@@ -25,6 +30,9 @@ export default function ChatMessage({ message }: Props) {
     }
     if (hindiState === 'loading' || !message.content?.trim()) return;
 
+    // Unlock HTML5 audio during this user gesture before going async
+    unlockFn?.();
+
     setHindiState('loading');
     try {
       const res = await fetch('/api/sarvam', {
@@ -32,21 +40,24 @@ export default function ChatMessage({ message }: Props) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: message.content }),
       });
-      if (!res.ok) throw new Error('Sarvam failed');
+      if (!res.ok) throw new Error(`Sarvam ${res.status}`);
       const data = await res.json();
-      if (!data.audioContent) throw new Error('No audio');
+      if (!data.audioContent) throw new Error('No audio returned');
+
+      setHindiText(data.hindiText ?? '');
 
       const audio = new Audio(`data:audio/wav;base64,${data.audioContent}`);
       audioRef.current = audio;
-      setHindiState('playing');
       audio.onended = () => { audioRef.current = null; setHindiState('idle'); };
-      audio.onerror = () => { audioRef.current = null; setHindiState('idle'); };
-      await audio.play();
+      audio.onerror = (e) => { console.error('[Hindi audio]', e); audioRef.current = null; setHindiState('idle'); };
+      setHindiState('playing');
+      const p = audio.play();
+      if (p) p.catch((e) => { console.error('[Hindi play]', e); setHindiState('idle'); });
     } catch (e) {
       console.error('[Hindi]', e);
       setHindiState('idle');
     }
-  }, [hindiState, message.content]);
+  }, [hindiState, message.content, unlockFn]);
 
   return (
     <motion.div
@@ -100,6 +111,18 @@ export default function ChatMessage({ message }: Props) {
             {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
           </p>
         </div>
+
+        {/* Hindi text — shown after translation */}
+        {!isUser && hindiText && (
+          <div style={{
+            fontSize: 12, lineHeight: 1.6, color: 'rgba(251,146,60,0.75)',
+            background: 'rgba(251,146,60,0.05)', border: '1px solid rgba(251,146,60,0.15)',
+            borderRadius: 12, padding: '8px 12px', marginTop: 2,
+            fontFamily: 'serif',
+          }}>
+            {hindiText}
+          </div>
+        )}
 
         {/* Hindi listen button — assistant messages only */}
         {!isUser && message.content && (

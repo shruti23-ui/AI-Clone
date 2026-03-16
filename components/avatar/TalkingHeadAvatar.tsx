@@ -108,9 +108,12 @@ export default function TalkingHeadAvatar() {
   const audioUnlocked = useRef(false);
   const jawRafRef     = useRef<number | null>(null);
   const mouthRefsRef  = useRef<Array<{ inf: Float32Array; idx: number }>>([]);
+  const introCacheRef = useRef<string | null>(null);
+  const introPlayed   = useRef(false);
 
-  const [status, setStatus]     = useState<Status>('loading');
-  const [errorMsg, setErrorMsg] = useState('');
+  const [status, setStatus]       = useState<Status>('loading');
+  const [errorMsg, setErrorMsg]   = useState('');
+  const [showPrompt, setShowPrompt] = useState(false);
   const { registerSpeakFn, registerStopFn, registerUnlockFn, setSpeaking } = useChatStore();
 
   const stopCurrent = useCallback(() => {
@@ -211,15 +214,31 @@ export default function TalkingHeadAvatar() {
     }
   }, [setSpeaking, stopCurrent, startJaw, stopJaw]);
 
+  const playIntro = useCallback(() => {
+    if (!headRef.current || introPlayed.current) return;
+    introPlayed.current = true;
+    speak(INTRO_TEXT, introCacheRef.current);
+  }, [speak]);
+
+  const handlePromptClick = useCallback(async () => {
+    setShowPrompt(false);
+    playClickSound();
+    await unlockHtmlAudio();
+    playIntro();
+  }, [unlockHtmlAudio, playIntro]);
+
   useEffect(() => {
     if (!containerRef.current) return;
     let cancelled = false;
 
-    // Register unlock so ChatPanel can call it on first user interaction
     registerUnlockFn(() => unlockHtmlAudio());
 
     const init = async () => {
       try {
+        // Pre-fetch intro audio while TalkingHead loads
+        fetchTTS(INTRO_TEXT).then((b64) => {
+          if (b64) introCacheRef.current = b64;
+        });
 
         const TalkingHead = await loadTalkingHeadClass();
         if (cancelled) return;
@@ -272,6 +291,8 @@ export default function TalkingHeadAvatar() {
         registerSpeakFn((text: string, cachedB64?: string | null) => speak(text, cachedB64));
         registerStopFn(() => { stopCurrent(); stopJaw(); setSpeaking(false); });
 
+        setShowPrompt(true);
+
       } catch (err: any) {
         console.error('[Avatar] Init error:', err);
         setStatus('error');
@@ -311,7 +332,29 @@ export default function TalkingHeadAvatar() {
       )}
 
 
-{status === 'error' && (
+      {status === 'ready' && showPrompt && (
+        <div style={{
+          position: 'absolute', bottom: 28, left: '50%', transform: 'translateX(-50%)',
+          zIndex: 50, whiteSpace: 'nowrap',
+        }}>
+          <button
+            onClick={handlePromptClick}
+            style={{
+              background: 'rgba(6,182,212,0.1)', border: '1px solid rgba(6,182,212,0.4)',
+              borderRadius: 24, padding: '9px 22px', backdropFilter: 'blur(8px)',
+              cursor: 'pointer', animation: 'fadeInUp 0.8s ease',
+              boxShadow: '0 0 16px rgba(6,182,212,0.15)',
+            }}
+          >
+            <p style={{ color: 'rgba(6,182,212,0.9)', fontSize: 11, fontFamily: 'monospace', letterSpacing: '0.15em', margin: 0 }}>
+              🔊 CLICK ANYWHERE TO HEAR SHRUTI
+            </p>
+          </button>
+          <style>{`@keyframes fadeInUp { from { opacity:0; transform:translateX(-50%) translateY(10px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }`}</style>
+        </div>
+      )}
+
+      {status === 'error' && (
         <div style={{
           position: 'absolute', inset: 0, pointerEvents: 'none',
           display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, padding: 32,
