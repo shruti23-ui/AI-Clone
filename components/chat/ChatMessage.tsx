@@ -107,26 +107,32 @@ export default function ChatMessage({ message }: Props) {
             onClick={handleHindi}
             disabled={hindiState === 'loading'}
             title={hindiState === 'playing' ? 'Stop Hindi audio' : 'Listen in Hindi'}
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded-full font-mono transition-all duration-200 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-full font-mono transition-all duration-200 active:scale-95 disabled:cursor-not-allowed"
             style={{
-              fontSize: 10,
+              fontSize: 11,
               letterSpacing: '0.05em',
               border: hindiState === 'playing'
-                ? '1px solid rgba(251,146,60,0.5)'
-                : '1px solid rgba(255,255,255,0.08)',
-              color: hindiState === 'playing' ? 'rgba(251,146,60,0.9)' : 'rgba(148,163,184,0.5)',
-              background: hindiState === 'playing' ? 'rgba(251,146,60,0.08)' : 'transparent',
+                ? '1px solid rgba(251,146,60,0.8)'
+                : '1px solid rgba(251,146,60,0.45)',
+              color: hindiState === 'playing' ? '#fb923c' : 'rgba(251,146,60,0.85)',
+              background: hindiState === 'playing'
+                ? 'rgba(251,146,60,0.15)'
+                : 'rgba(251,146,60,0.07)',
+              boxShadow: hindiState === 'playing'
+                ? '0 0 10px rgba(251,146,60,0.25)'
+                : '0 0 6px rgba(251,146,60,0.1)',
+              opacity: hindiState === 'loading' ? 0.6 : 1,
             }}
           >
             {hindiState === 'loading' && (
               <>
-                <div className="w-2.5 h-2.5 rounded-full border border-t-orange-400 border-orange-400/20 animate-spin" />
-                <span>अनुवाद...</span>
+                <div className="w-3 h-3 rounded-full border-2 border-t-orange-400 border-orange-400/20 animate-spin" />
+                <span>अनुवाद हो रहा है...</span>
               </>
             )}
             {hindiState === 'playing' && (
               <>
-                <span className="flex items-end gap-px" style={{ height: 12 }}>
+                <span className="flex items-end gap-px" style={{ height: 14 }}>
                   {[0.4, 0.7, 1, 0.7, 0.4].map((h, i) => (
                     <span key={i} className="w-0.5 rounded-sm bg-orange-400 inline-block"
                       style={{
@@ -142,7 +148,7 @@ export default function ChatMessage({ message }: Props) {
             )}
             {hindiState === 'idle' && (
               <>
-                <span>🇮🇳</span>
+                <span style={{ fontSize: 13 }}>🇮🇳</span>
                 <span>हिंदी में सुनें</span>
               </>
             )}
