@@ -15,7 +15,7 @@ const SUGGESTIONS = [
 ];
 
 export default function ChatPanel() {
-  const { messages, isLoading, speakFn, addMessage, updateLastMessage, setLoading } = useChatStore();
+  const { messages, isLoading, speakFn, unlockFn, addMessage, updateLastMessage, setLoading } = useChatStore();
   const [input, setInput] = useState('');
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef  = useRef<HTMLInputElement>(null);
@@ -32,6 +32,7 @@ export default function ChatPanel() {
     const trimmed = text.trim();
     if (!trimmed || isLoading) return;
 
+    unlockFn?.(); // unlock HTML5 audio during user gesture
     setInput('');
     addMessage({ role: 'user', content: trimmed });
     addMessage({ role: 'assistant', content: '' });

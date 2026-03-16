@@ -104,19 +104,14 @@ function loadTalkingHeadClass(): Promise<any> {
 export default function TalkingHeadAvatar() {
   const containerRef  = useRef<HTMLDivElement>(null);
   const headRef       = useRef<any>(null);
-  const introPlayed   = useRef(false);
-  const introCacheRef = useRef<string | null>(null);
   const audioRef      = useRef<HTMLAudioElement | null>(null);
-  const audioUnlocked = useRef(false); // true once silent WAV has played
+  const audioUnlocked = useRef(false);
   const jawRafRef     = useRef<number | null>(null);
-  // Direct Three.js mesh refs for mouthOpen — populated after avatar loads
-  // Bypasses TalkingHead's update loop entirely for guaranteed lip sync
   const mouthRefsRef  = useRef<Array<{ inf: Float32Array; idx: number }>>([]);
 
   const [status, setStatus]     = useState<Status>('loading');
   const [errorMsg, setErrorMsg] = useState('');
-  const [showPrompt, setShowPrompt] = useState(false);
-  const { registerSpeakFn, registerStopFn, setSpeaking } = useChatStore();
+  const { registerSpeakFn, registerStopFn, registerUnlockFn, setSpeaking } = useChatStore();
 
   const stopCurrent = useCallback(() => {
     if (audioRef.current) {
@@ -216,32 +211,15 @@ export default function TalkingHeadAvatar() {
     }
   }, [setSpeaking, stopCurrent, startJaw, stopJaw]);
 
-  // ── Intro — idempotent ────────────────────────────────────────────────────
-  const playIntro = useCallback(() => {
-    if (!headRef.current || introPlayed.current) return;
-    introPlayed.current = true;
-    console.log('[Avatar] Playing intro');
-    speak(INTRO_TEXT, introCacheRef.current);
-  }, [speak]);
-
-  // ── First interaction: unlock audio then play intro ───────────────────────
-  const handleFirstInteraction = useCallback(async () => {
-    setShowPrompt(false);
-    await unlockHtmlAudio(); // synchronous unlock during user gesture
-    playIntro();
-  }, [unlockHtmlAudio, playIntro]);
-
   useEffect(() => {
     if (!containerRef.current) return;
     let cancelled = false;
 
+    // Register unlock so ChatPanel can call it on first user interaction
+    registerUnlockFn(() => unlockHtmlAudio());
+
     const init = async () => {
       try {
-        // Pre-fetch intro audio while TalkingHead loads
-        fetchTTS(INTRO_TEXT).then((b64) => {
-          if (b64) { introCacheRef.current = b64; console.log('[Avatar] Intro pre-cached'); }
-          else console.warn('[Avatar] Intro pre-cache failed — will fetch on demand');
-        });
 
         const TalkingHead = await loadTalkingHeadClass();
         if (cancelled) return;
@@ -294,18 +272,6 @@ export default function TalkingHeadAvatar() {
         registerSpeakFn((text: string, cachedB64?: string | null) => speak(text, cachedB64));
         registerStopFn(() => { stopCurrent(); stopJaw(); setSpeaking(false); });
 
-        // Always show click prompt — never autoplay
-        setShowPrompt(true);
-
-        // Speak only on first user click/key
-        const onInteract = () => {
-          document.removeEventListener('click', onInteract, true);
-          document.removeEventListener('keydown', onInteract, true);
-          handleFirstInteraction();
-        };
-        document.addEventListener('click', onInteract, true);
-        document.addEventListener('keydown', onInteract, true);
-
       } catch (err: any) {
         console.error('[Avatar] Init error:', err);
         setStatus('error');
@@ -344,22 +310,8 @@ export default function TalkingHeadAvatar() {
         </div>
       )}
 
-      {status === 'ready' && showPrompt && (
-        <div style={{
-          position: 'absolute', bottom: 28, left: '50%', transform: 'translateX(-50%)',
-          background: 'rgba(6,182,212,0.08)', border: '1px solid rgba(6,182,212,0.25)',
-          borderRadius: 24, padding: '8px 20px', backdropFilter: 'blur(8px)',
-          whiteSpace: 'nowrap', animation: 'fadeIn 0.8s ease',
-          pointerEvents: 'none', zIndex: 50,
-        }}>
-          <p style={{ color: 'rgba(6,182,212,0.8)', fontSize: 11, fontFamily: 'monospace', letterSpacing: '0.15em', margin: 0 }}>
-            🔊 CLICK ANYWHERE TO HEAR SHRUTI
-          </p>
-          <style>{`@keyframes fadeIn { from { opacity:0; transform:translateX(-50%) translateY(10px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }`}</style>
-        </div>
-      )}
 
-      {status === 'error' && (
+{status === 'error' && (
         <div style={{
           position: 'absolute', inset: 0, pointerEvents: 'none',
           display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, padding: 32,

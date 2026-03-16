@@ -17,8 +17,10 @@ interface ChatStore {
 
   speakFn: ((text: string, cachedB64?: string | null) => void) | null;
   stopFn: (() => void) | null;
+  unlockFn: (() => void) | null;
   registerSpeakFn: (fn: (text: string, cachedB64?: string | null) => void) => void;
   registerStopFn: (fn: () => void) => void;
+  registerUnlockFn: (fn: () => void) => void;
   stopSpeaking: () => void;
 
   addMessage: (msg: Omit<Message, 'id' | 'timestamp'>) => void;
@@ -43,9 +45,11 @@ export const useChatStore = create<ChatStore>((set) => ({
   isListening: false,
   speakFn: null,
   stopFn: null,
+  unlockFn: null,
 
   registerSpeakFn: (fn) => set({ speakFn: fn }),
   registerStopFn: (fn) => set({ stopFn: fn }),
+  registerUnlockFn: (fn) => set({ unlockFn: fn }),
   stopSpeaking: () => {
     const { stopFn } = useChatStore.getState();
     stopFn?.();
