@@ -56,13 +56,13 @@ async function hindiTTS(text: string): Promise<string> {
     body: JSON.stringify({
       inputs: chunks,
       target_language_code: 'hi-IN',
-      speaker: 'meera',
+      speaker: 'anushka',
       pitch: 0,
       pace: 1.4,
       loudness: 1.5,
       speech_sample_rate: 22050,
       enable_preprocessing: false,
-      model: 'bulbul:v1',
+      model: 'bulbul:v2',
     }),
   });
 
