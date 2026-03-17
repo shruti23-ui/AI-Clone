@@ -348,7 +348,7 @@ export default function TalkingHeadAvatar() {
               🔊 CLICK ANYWHERE TO HEAR SHRUTI
             </p>
           </button>
-          <style>{`@keyframes fadeInUp { from { opacity:0; transform:translateX(-50%) translateY(10px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }`}</style>
+          <style>{`@keyframes fadeInUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }`}</style>
         </div>
       )}
 

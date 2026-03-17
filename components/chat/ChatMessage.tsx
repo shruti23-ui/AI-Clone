@@ -112,18 +112,6 @@ export default function ChatMessage({ message }: Props) {
           </p>
         </div>
 
-        {/* Hindi text — shown after translation */}
-        {!isUser && hindiText && (
-          <div style={{
-            fontSize: 12, lineHeight: 1.6, color: 'rgba(251,146,60,0.75)',
-            background: 'rgba(251,146,60,0.05)', border: '1px solid rgba(251,146,60,0.15)',
-            borderRadius: 12, padding: '8px 12px', marginTop: 2,
-            fontFamily: 'serif',
-          }}>
-            {hindiText}
-          </div>
-        )}
-
         {/* Hindi listen button — assistant messages only */}
         {!isUser && message.content && (
           <button
@@ -176,6 +164,18 @@ export default function ChatMessage({ message }: Props) {
               </>
             )}
           </button>
+        )}
+
+        {/* Hindi text — appears below button after translation */}
+        {!isUser && hindiText && (
+          <div style={{
+            fontSize: 12, lineHeight: 1.7, color: 'rgba(251,146,60,0.8)',
+            background: 'rgba(251,146,60,0.06)', border: '1px solid rgba(251,146,60,0.18)',
+            borderRadius: 12, padding: '8px 12px',
+            fontFamily: 'Georgia, serif',
+          }}>
+            {hindiText}
+          </div>
         )}
       </div>
     </motion.div>
