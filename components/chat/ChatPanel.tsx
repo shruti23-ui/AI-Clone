@@ -75,13 +75,24 @@ export default function ChatPanel() {
       if (!ttsPromise) ttsPromise = fetchTTS(fullText);
 
       // Pass the Promise directly — speak() starts jaw immediately, plays when audio resolves
-      speakFn?.(fullText, ttsPromise);
+      if (speakFn) {
+        speakFn(fullText, ttsPromise);
+      } else {
+        // Avatar still loading — retry once it registers
+        console.warn('[Chat] speakFn not ready, queuing speech');
+        const unsub = useChatStore.subscribe((s) => {
+          if (s.speakFn) {
+            s.speakFn(fullText, ttsPromise);
+            unsub();
+          }
+        });
+      }
     } catch {
       updateLastMessage("I'm sorry, something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
-  }, [isLoading, speakFn, addMessage, updateLastMessage, setLoading]);
+  }, [isLoading, speakFn, unlockFn, addMessage, updateLastMessage, setLoading]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(input); }

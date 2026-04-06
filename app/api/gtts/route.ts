@@ -22,7 +22,7 @@ function estimateDurationFromText(text: string): number {
   return Math.max(1, (wordCount / 150) * 60);
 }
 
-const VOICE_ID = 'nc2Vl5hShcxvKJ6EZJEP';
+const VOICE_ID = process.env.ELEVENLABS_VOICE_ID ?? 'nc2Vl5hShcxvKJ6EZJEP';
 
 export async function POST(req: NextRequest) {
   try {
